@@ -27,6 +27,7 @@ dependencies {
 
     implementation 'edu.stanford.nlp:stanford-corenlp:4.5.8'
     implementation 'edu.stanford.nlp:stanford-corenlp:4.5.8:models'
+    implementation group: 'com.microsoft.cognitiveservices.speech', name: 'client-sdk', version: "1.42.0", ext: "jar"
     implementation 'ch.qos.logback:logback-classic:1.2.6'  // Logback Logger (for full-featured logging)
 }
 

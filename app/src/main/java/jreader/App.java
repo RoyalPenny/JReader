@@ -3,30 +3,17 @@
  */
 package jreader;
 
-import java.util.Properties;
-
-import edu.stanford.nlp.ling.CoreAnnotations;
-import edu.stanford.nlp.pipeline.Annotation;
-import edu.stanford.nlp.pipeline.StanfordCoreNLP;
+import java.util.concurrent.ExecutionException;
 
 public class App {
-    public static void main(String[] args) {
-        // Set up Stanford CoreNLP with desired annotators
-        Properties props = new Properties();
-        props.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner,entitymentions,depparse,coref,quote");
+    public static void main(String[] args) throws InterruptedException, ExecutionException {
+        FindQuotes finder = new FindQuotes();  // Create an instance of FindQuotes
+        SpeechSynthesis speech = new SpeechSynthesis();
 
-        // Build the pipeline
-        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
+        String text = "Jack walked over and said to Smith, \"Good Day?\" \"Yes it is.\"";
 
-        // Input text
-        String text = "Jack walked over and said to Smith. \"Good Day?\" \"Yes it is.\"";
-
-        // Create an annotation object
-        Annotation document = new Annotation(text);
-
-        // Run NLP processing
-        pipeline.annotate(document);
-
-        System.out.println(document.get(CoreAnnotations.QuotationsAnnotation.class));
+        finder.processText(text);  // Call the method to process text
+        speech.GenerateTTS(text, finder.getSpeakers());
+        System.exit(0);
     }
 }
