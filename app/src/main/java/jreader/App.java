@@ -9,11 +9,19 @@ public class App {
     public static void main(String[] args) throws InterruptedException, ExecutionException {
         FindQuotes finder = new FindQuotes();  // Create an instance of FindQuotes
         SpeechSynthesis speech = new SpeechSynthesis();
+        speech.getSpeakers();
 
-        String text = "Jack walked over and said to Smith, \"Good Day?\" \"Yes it is.\"";
+        String text = "Tayman said he was very tired even though Sarah was not. She said \"I want to stay out longer\". \"I dont.\" said Tayman.";
 
         finder.processText(text);  // Call the method to process text
-        speech.GenerateTTS(text, finder.getSpeakers());
+        
+        /*for (VoiceInfo voice : speech.getNeutralSpeakers()) {
+            System.out.println("Voice Name: " + voice.getName());
+            System.out.println("Language: " + voice.getLocale());
+            System.out.println("Gender: " + voice.getGender());
+            System.out.println("======================");
+        }*/
+
         System.exit(0);
     }
 }
