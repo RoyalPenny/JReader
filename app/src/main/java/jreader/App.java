@@ -11,9 +11,11 @@ public class App {
         SpeechSynthesis speech = new SpeechSynthesis();
         speech.getSpeakers();
 
-        String text = "Tayman said he was very tired even though Sarah was not. She said \"I want to stay out longer\". \"I dont.\" said Tayman.";
+        String text = "John said, \"I will be there soon.\" Mary replied, \"Okay, see you later.\" "
+            + "Then, Bob asked, \"Are you both coming?\" John confirmed, \"Yes, we are on our way.\"";
 
         finder.processText(text);  // Call the method to process text
+        finder.getQuoteSpeaker();
         
         /*for (VoiceInfo voice : speech.getNeutralSpeakers()) {
             System.out.println("Voice Name: " + voice.getName());
