@@ -1,13 +1,15 @@
 package jreader;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import edu.stanford.nlp.coref.data.CorefChain.CorefMention;
 
 public class QuoteMap {
     private final HashMap<String, List<Integer>> quotes;
-    private final HashMap<List<Integer>, CorefMention> mention;
+    private HashMap<List<Integer>, CorefMention> mention;
 
     public QuoteMap(){ 
         this.quotes = new HashMap<>(); // Correct initialization
@@ -23,14 +25,19 @@ public class QuoteMap {
     }
 
     public void addQuote(String quote, List<Integer> sentenceIndices) {
-        this.quotes.put(quote, sentenceIndices);
+        this.quotes.put(quote.trim(), sentenceIndices);
     }
 
     public void addMention(List<Integer> sentenceIndices, CorefMention corefMention) {
         this.mention.put(sentenceIndices, corefMention);
     }
 
-    public List<Integer> getQuoteIndex(String quote){
-        return this.quotes.get(quote);
+    public List<Integer> getQuoteIndex(String quote) {
+        quote = quote.trim();
+        return this.quotes.getOrDefault(quote, new ArrayList<>());
+    }
+
+    public List<Map.Entry<String, List<Integer>>> getAllQuoteEntries() {
+        return new ArrayList<>(this.quotes.entrySet());
     }
 }

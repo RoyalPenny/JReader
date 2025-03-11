@@ -67,7 +67,9 @@ public class FindQuotes {
                     System.out.println(token.toString());
                     System.out.println(token.sentIndex() + 1 + ", " + token.index());
                     System.out.println(quote.toString());
-                    this.quoteMap.addQuote(quote.toString(), Arrays.asList(token.sentIndex() + 1, token.index()));
+                    
+                    String quoteString = quote.toString().trim();
+                    this.quoteMap.addQuote(quoteString, Arrays.asList(token.sentIndex() + 1, token.index()));
                 }
             });
 
@@ -75,6 +77,6 @@ public class FindQuotes {
     }
 
     public void getQuoteSpeaker(){
-        System.out.println(this.quoteMap.getQuoteIndex("I will be there soon."));
+        System.out.println(this.quoteMap.getQuoteIndex("\"Okay, see you later.\""));
     }
 }
