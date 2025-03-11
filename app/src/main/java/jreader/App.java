@@ -15,7 +15,7 @@ public class App {
             + "Then, Bob asked, \"Are you both coming?\" John confirmed, \"Yes, we are on our way.\"";
 
         finder.processText(text);  // Call the method to process text
-        finder.getQuoteSpeaker("\"I will be there soon.\"");
+        System.out.println(finder.getQuoteSpeaker("\"I will be there soon.\""));
         
         /*for (VoiceInfo voice : speech.getNeutralSpeakers()) {
             System.out.println("Voice Name: " + voice.getName());

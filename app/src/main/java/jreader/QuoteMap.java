@@ -5,31 +5,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import edu.stanford.nlp.coref.data.CorefChain.CorefMention;
-
 public class QuoteMap {
     private final HashMap<String, List<Integer>> quotes;
-    private HashMap<List<Integer>, CorefMention> mention;
+    private HashMap<List<Integer>, String> voices;
 
     public QuoteMap(){ 
         this.quotes = new HashMap<>(); // Correct initialization
-        this.mention = new HashMap<>(); // Correct initialization
+        this.voices = new HashMap<>(); // Correct initialization
     }
 
     public HashMap<String, List<Integer>> getQuotesHashMap() {
         return this.quotes;
     }
 
-    public HashMap<List<Integer>, CorefMention> getMentionHashMap() {
-        return this.mention;
+    public HashMap<List<Integer>, String> getVoicesHashMap() {
+        return this.voices;
     }
 
     public void addQuote(String quote, List<Integer> sentenceIndices) {
         this.quotes.put(quote.trim(), sentenceIndices);
     }
 
-    public void addMention(List<Integer> sentenceIndices, CorefMention corefMention) {
-        this.mention.put(sentenceIndices, corefMention);
+    public void addVoice(List<Integer> sentenceIndices, String voice) {
+        this.voices.put(sentenceIndices, voice);
     }
 
     public List<Integer> getQuoteToIndex(String quote) {
@@ -37,8 +35,8 @@ public class QuoteMap {
         return this.quotes.get(quote);
     }
 
-    public CorefMention getIndexToEntity(List<Integer> index) {
-        return this.mention.get(index);
+    public String getIndexToVoice(List<Integer> index) {
+        return this.voices.get(index);
     }
 
     public List<Map.Entry<String, List<Integer>>> getAllQuoteEntries() {

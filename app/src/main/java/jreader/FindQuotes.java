@@ -7,6 +7,7 @@ import java.util.Properties;
 
 import edu.stanford.nlp.coref.data.CorefChain;
 import edu.stanford.nlp.coref.data.CorefChain.CorefMention;
+import edu.stanford.nlp.coref.data.Dictionaries.Gender;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.CoreDocument;
 import edu.stanford.nlp.pipeline.CoreQuote;
@@ -17,13 +18,13 @@ public class FindQuotes {
     private QuoteMap quoteMap;
 
         // Constructor to initialize CoreNLP pipeline
-        public FindQuotes() {
-            Properties props = new Properties();
+    public FindQuotes() {
+        Properties props = new Properties();
     
-            props.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner,entitymentions,depparse,coref,quote");
+        props.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner,entitymentions,depparse,coref,quote");
     
-            this.pipeline = new StanfordCoreNLP(props);
-            this.quoteMap = new QuoteMap();
+        this.pipeline = new StanfordCoreNLP(props);
+        this.quoteMap = new QuoteMap();
 
     }
 
@@ -32,31 +33,38 @@ public class FindQuotes {
     public void processText(String text) {
         CoreDocument coreDocument = pipeline.processToCoreDocument(text);
 
-        /* 
-        for(CoreEntityMention mention : coreDocument.entityMentions()){
-            for(CoreLabel token : mention.tokens()){
-                System.out.println(token.toString());
-                System.out.println(token.sentIndex() + 1 + ", " + token.index());
-            }
-        }
-        */
-
         Map<Integer, CorefChain> corefChains = coreDocument.corefChains();
         
-        for (CorefChain chain : corefChains.values()) {
-            System.out.println("============");
-            System.out.println("Entity " + chain.getChainID());
-            
+        for (CorefChain chain : corefChains.values()) {        
             //chain.getMentionsWithSameHead(sentenceNumber, headIndex)
+            Gender entityGender = Gender.UNKNOWN;
+            for(CorefMention mention : chain.getMentionsInTextualOrder()){
+                if(mention.gender.equals(Gender.FEMALE)){
+                    entityGender = Gender.FEMALE;
+                    break;
+                }
 
+                if(mention.gender.equals(Gender.MALE)){
+                    entityGender = Gender.MALE;
+                    break;
+                }
+
+                if(mention.gender.equals(Gender.NEUTRAL)){
+                    entityGender = Gender.NEUTRAL;
+                }
+            }
+     
+            System.out.println("============");
+            System.out.println("Entity: " + chain.getChainID() + " Gender: " + entityGender.toString());
+            //ToDo
+            //Set random azure voice based on gender
 
             for (CorefMention mention : chain.getMentionsInTextualOrder()){
                 System.out.println(mention);
-                System.out.println(mention.gender);
+                System.out.println(mention.corefClusterID);
                 System.out.println(mention.sentNum + ", " + mention.headIndex);
-                this.quoteMap.addMention(Arrays.asList(mention.sentNum, mention.headIndex), mention);
+                this.quoteMap.addVoice(Arrays.asList(mention.sentNum, mention.headIndex), "Azure Synthesised Voice");
             }
-         
         }
 
         System.out.println("xxxxxxxxxxxxxxxxxx");
@@ -76,11 +84,11 @@ public class FindQuotes {
         }
     }
 
-    public void getQuoteSpeaker(String quote){
+    public String getQuoteSpeaker(String quote){
         List<Integer> quoteIndex = this.quoteMap.getQuoteToIndex(quote);
-        CorefMention entity = this.quoteMap.getIndexToEntity(quoteIndex);
+        String voice = this.quoteMap.getIndexToVoice(quoteIndex);
         
-        System.out.println(quote + " was quoted by " + entity);
-
+        System.out.println(quote + " is voiced by " + voice);
+        return voice;
     }
 }
