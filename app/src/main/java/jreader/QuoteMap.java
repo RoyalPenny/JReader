@@ -32,9 +32,13 @@ public class QuoteMap {
         this.mention.put(sentenceIndices, corefMention);
     }
 
-    public List<Integer> getQuoteIndex(String quote) {
+    public List<Integer> getQuoteToIndex(String quote) {
         quote = quote.trim();
-        return this.quotes.getOrDefault(quote, new ArrayList<>());
+        return this.quotes.get(quote);
+    }
+
+    public CorefMention getIndexToEntity(List<Integer> index) {
+        return this.mention.get(index);
     }
 
     public List<Map.Entry<String, List<Integer>>> getAllQuoteEntries() {

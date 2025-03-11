@@ -76,7 +76,11 @@ public class FindQuotes {
         }
     }
 
-    public void getQuoteSpeaker(){
-        System.out.println(this.quoteMap.getQuoteIndex("\"Okay, see you later.\""));
+    public void getQuoteSpeaker(String quote){
+        List<Integer> quoteIndex = this.quoteMap.getQuoteToIndex(quote);
+        CorefMention entity = this.quoteMap.getIndexToEntity(quoteIndex);
+        
+        System.out.println(quote + " was quoted by " + entity);
+
     }
 }
