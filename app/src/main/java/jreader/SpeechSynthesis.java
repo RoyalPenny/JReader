@@ -3,6 +3,7 @@ package jreader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ThreadLocalRandom;
 
 import com.microsoft.cognitiveservices.speech.CancellationReason;
 import com.microsoft.cognitiveservices.speech.ResultReason;
@@ -12,6 +13,8 @@ import com.microsoft.cognitiveservices.speech.SpeechSynthesisResult;
 import com.microsoft.cognitiveservices.speech.SpeechSynthesizer;
 import com.microsoft.cognitiveservices.speech.SynthesisVoicesResult;
 import com.microsoft.cognitiveservices.speech.VoiceInfo;
+
+import edu.stanford.nlp.coref.data.Dictionaries.Gender;
 
 public class SpeechSynthesis {
     // This example requires environment variables named "SPEECH_KEY" and "SPEECH_REGION"
@@ -25,7 +28,6 @@ public class SpeechSynthesis {
         this.maleSpeakers = new ArrayList<>();
         this.femaleSpeakers = new ArrayList<>();
         this.neutralSpeakers = new ArrayList<>();
-
     }
 
     public void GenerateTTS(String text, String speaker) throws InterruptedException, ExecutionException {
@@ -59,25 +61,32 @@ public class SpeechSynthesis {
         }
     }
 
-    public void getSpeakers(){
+    public void generateSpeakerLists(){
         try (SpeechConfig speechConfig = SpeechConfig.fromSubscription(speechKey, speechRegion);
              SpeechSynthesizer speechSynthesizer = new SpeechSynthesizer(speechConfig)) {
 
             // Retrieve available voices
             SynthesisVoicesResult synthesisVoicesResult = speechSynthesizer.getVoicesAsync().get();
+            this.femaleSpeakers = new ArrayList<>();
+            this.maleSpeakers = new ArrayList<>();
+            this.neutralSpeakers = new ArrayList<>();
 
             for (VoiceInfo voice : synthesisVoicesResult.getVoices()) {
                 if (voice.getLocale().matches("^en-[A-Za-z]{2}$")) {
                     if (voice.getGender().toString().matches("Male")){
-                        maleSpeakers.add(voice);
+                        this.maleSpeakers.add(voice);
                     } else if(voice.getGender().toString().matches("Female")) {
-                        femaleSpeakers.add(voice);
+                        this.femaleSpeakers.add(voice);
                     } else {
-                        neutralSpeakers.add(voice);
+                        this.neutralSpeakers.add(voice);
                     }
                 }
                 
             }
+
+            System.out.println(this.maleSpeakers);
+            System.out.println(this.femaleSpeakers);
+            System.out.println(this.neutralSpeakers);     
 
         } catch (Exception e) {
             System.out.println("Failed to get speakers");
@@ -85,14 +94,41 @@ public class SpeechSynthesis {
     }
 
     public List<VoiceInfo> getMaleSpeakers(){
-        return maleSpeakers;
+        return this.maleSpeakers;
     }
 
     public List<VoiceInfo> getFemaleSpeakers(){
-        return femaleSpeakers;
+        return this.femaleSpeakers;
     }
 
     public List<VoiceInfo> getNeutralSpeakers(){
-        return neutralSpeakers;
+        return this.neutralSpeakers;
+    }
+
+    public VoiceInfo getSpeakerString(Gender gender){
+        int index;
+        VoiceInfo speaker;
+
+        switch(gender){
+            case Gender.MALE:
+                index = ThreadLocalRandom.current().nextInt(this.maleSpeakers.size());
+                speaker = this.maleSpeakers.get(index);
+                this.maleSpeakers.remove(index);
+                System.out.println("Voice set as Male");
+                break;
+            case Gender.FEMALE:
+                index = ThreadLocalRandom.current().nextInt(this.femaleSpeakers.size());
+                speaker = this.femaleSpeakers.get(index);
+                this.femaleSpeakers.remove(index);
+                System.out.println("Voice set as Female");
+                break;
+            default:
+                index = ThreadLocalRandom.current().nextInt(this.neutralSpeakers.size());
+                speaker = this.neutralSpeakers.get(index);
+                System.out.println("Voice set as Neutral");    
+                break; 
+        }
+        
+        return speaker;
     }
 }

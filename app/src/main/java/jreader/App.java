@@ -8,14 +8,22 @@ import java.util.concurrent.ExecutionException;
 public class App {
     public static void main(String[] args) throws InterruptedException, ExecutionException {
         FindQuotes finder = new FindQuotes();  // Create an instance of FindQuotes
-        SpeechSynthesis speech = new SpeechSynthesis();
-        speech.getSpeakers();
 
-        String text = "John said, \"I will be there soon.\" Mary replied, \"Okay, see you later.\" "
-            + "Then, Bob asked, \"Are you both coming?\" John confirmed, \"Yes, we are on our way.\"";
+        String text = "John walked into the café and spotted his friend Emily. "
+        + "\"Hey, how's your day going?\" he asked with a smile. "
+        + "\"It's been busy,\" She replied, taking a sip of her coffee. \"I had back-to-back meetings all morning.\" "
+        + "As they chatted, a waiter approached them. \"Would you like to order anything else?\" he inquired. "
+        + "John shook his head. \"No, just the check, please.\" "
+        + "Emily glanced at her phone. \"I should get going soon. He's expecting me at the office,\" she said. "
+        + "\"Who's expecting you?\" John asked, raising an eyebrow. "
+        + "\"Oh, my manager, Mr. Thompson,\" she clarified. \"He wanted an update on the project.\" "
+        + "The waiter returned with the bill. \"Take your time,\" he said before walking away. "
+        + "John looked at Emily. \"Well, let's catch up again soon.\" "
+        + "\"Definitely,\" she said with a smile."; 
 
         finder.processText(text);  // Call the method to process text
-        System.out.println(finder.getQuoteSpeaker("\"I will be there soon.\""));
+        finder.getQuoteSpeaker("\"It's been busy,\"");
+        finder.getQuoteSpeaker("\"Oh, my manager, Mr. Thompson,\"");
         
         /*for (VoiceInfo voice : speech.getNeutralSpeakers()) {
             System.out.println("Voice Name: " + voice.getName());

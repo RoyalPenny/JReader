@@ -5,9 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.microsoft.cognitiveservices.speech.VoiceInfo;
+
 public class QuoteMap {
     private final HashMap<String, List<Integer>> quotes;
-    private HashMap<List<Integer>, String> voices;
+    private HashMap<List<Integer>, VoiceInfo> voices;
 
     public QuoteMap(){ 
         this.quotes = new HashMap<>(); // Correct initialization
@@ -18,7 +20,7 @@ public class QuoteMap {
         return this.quotes;
     }
 
-    public HashMap<List<Integer>, String> getVoicesHashMap() {
+    public HashMap<List<Integer>, VoiceInfo> getVoicesHashMap() {
         return this.voices;
     }
 
@@ -26,7 +28,7 @@ public class QuoteMap {
         this.quotes.put(quote.trim(), sentenceIndices);
     }
 
-    public void addVoice(List<Integer> sentenceIndices, String voice) {
+    public void addVoice(List<Integer> sentenceIndices, VoiceInfo voice) {
         this.voices.put(sentenceIndices, voice);
     }
 
@@ -35,7 +37,7 @@ public class QuoteMap {
         return this.quotes.get(quote);
     }
 
-    public String getIndexToVoice(List<Integer> index) {
+    public VoiceInfo getIndexToVoice(List<Integer> index) {
         return this.voices.get(index);
     }
 
