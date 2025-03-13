@@ -83,11 +83,6 @@ public class SpeechSynthesis {
                 }
                 
             }
-
-            System.out.println(this.maleSpeakers);
-            System.out.println(this.femaleSpeakers);
-            System.out.println(this.neutralSpeakers);     
-
         } catch (Exception e) {
             System.out.println("Failed to get speakers");
         }
@@ -105,28 +100,28 @@ public class SpeechSynthesis {
         return this.neutralSpeakers;
     }
 
-    public VoiceInfo getSpeakerString(Gender gender){
+    public VoiceInfo getSpeakerVoice(Gender gender){
         int index;
         VoiceInfo speaker;
 
         switch(gender){
-            case Gender.MALE:
+            case Gender.MALE -> {
                 index = ThreadLocalRandom.current().nextInt(this.maleSpeakers.size());
                 speaker = this.maleSpeakers.get(index);
                 this.maleSpeakers.remove(index);
                 System.out.println("Voice set as Male");
-                break;
-            case Gender.FEMALE:
+            }
+            case Gender.FEMALE -> {
                 index = ThreadLocalRandom.current().nextInt(this.femaleSpeakers.size());
                 speaker = this.femaleSpeakers.get(index);
                 this.femaleSpeakers.remove(index);
                 System.out.println("Voice set as Female");
-                break;
-            default:
+            }
+            default -> {
                 index = ThreadLocalRandom.current().nextInt(this.neutralSpeakers.size());
                 speaker = this.neutralSpeakers.get(index);
-                System.out.println("Voice set as Neutral");    
-                break; 
+                System.out.println("Voice set as Neutral");
+            } 
         }
         
         return speaker;

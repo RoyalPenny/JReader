@@ -17,8 +17,9 @@ import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 
 public class FindQuotes {
     private final StanfordCoreNLP pipeline;
-    private QuoteMap quoteMap;
-    private SpeechSynthesis speechSynthesiser;
+    private final QuoteMap quoteMap;
+    private final SpeechSynthesis speechSynthesiser;
+    private VoiceInfo narrator;
 
         // Constructor to initialize CoreNLP pipeline
     public FindQuotes() {
@@ -30,7 +31,7 @@ public class FindQuotes {
         this.pipeline = new StanfordCoreNLP(props);
         this.quoteMap = new QuoteMap();
         this.speechSynthesiser = new SpeechSynthesis();
-
+        this.narrator = null;
     }
 
     // Method to process text and extract quotes
@@ -64,7 +65,7 @@ public class FindQuotes {
             //ToDo
             //Set random azure voice based on gender
 
-            VoiceInfo voice = speechSynthesiser.getSpeakerString(entityGender);
+            VoiceInfo voice = speechSynthesiser.getSpeakerVoice(entityGender);
 
             for (CorefMention mention : chain.getMentionsInTextualOrder()){
                 System.out.println(mention);
@@ -97,5 +98,13 @@ public class FindQuotes {
         VoiceInfo voice = this.quoteMap.getIndexToVoice(quoteIndex);
         System.out.println(quote + " is voiced by " + voice.getName());
         return voice;
+    }
+
+    public void setNarrator(){
+        this.narrator = speechSynthesiser.getSpeakerVoice(Gender.MALE);
+    }
+
+    public VoiceInfo getNarrator(){
+        return this.narrator;
     }
 }
