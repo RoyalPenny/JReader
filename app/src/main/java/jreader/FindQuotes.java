@@ -19,7 +19,7 @@ public class FindQuotes {
     private final StanfordCoreNLP pipeline;
     private final QuoteMap quoteMap;
     private final SpeechSynthesis speechSynthesiser;
-    private VoiceInfo narrator;
+
 
         // Constructor to initialize CoreNLP pipeline
     public FindQuotes() {
@@ -31,15 +31,14 @@ public class FindQuotes {
         this.pipeline = new StanfordCoreNLP(props);
         this.quoteMap = new QuoteMap();
         this.speechSynthesiser = new SpeechSynthesis();
-        this.narrator = null;
     }
 
     // Method to process text and extract quotes
 
     public void processText(String text) {
         CoreDocument coreDocument = pipeline.processToCoreDocument(text);
-
         Map<Integer, CorefChain> corefChains = coreDocument.corefChains();
+
         speechSynthesiser.generateSpeakerLists();
         
         for (CorefChain chain : corefChains.values()) {        
@@ -61,11 +60,15 @@ public class FindQuotes {
             }
      
             System.out.println("============");
-            System.out.println("Entity: " + chain.getChainID() + " Gender: " + entityGender.toString());
-            //ToDo
-            //Set random azure voice based on gender
+            System.out.println("Entity: " + chain.getRepresentativeMention().toString() + " Gender: " + entityGender.toString());
+            VoiceInfo voice;
 
-            VoiceInfo voice = speechSynthesiser.getSpeakerVoice(entityGender);
+            if(!this.quoteMap.getEntitiesHashMap().containsKey(chain.getRepresentativeMention().toString())){
+                    voice = speechSynthesiser.getSpeakerVoice(entityGender);
+                	this.quoteMap.addEntity((chain.getRepresentativeMention()).toString(), voice);
+            } else {
+                voice = this.quoteMap.getEntityToVoice(chain.getRepresentativeMention().toString());
+            }
 
             for (CorefMention mention : chain.getMentionsInTextualOrder()){
                 System.out.println(mention);
@@ -100,11 +103,7 @@ public class FindQuotes {
         return voice;
     }
 
-    public void setNarrator(){
-        this.narrator = speechSynthesiser.getSpeakerVoice(Gender.MALE);
-    }
-
     public VoiceInfo getNarrator(){
-        return this.narrator;
+        return speechSynthesiser.getSpeakerVoice(Gender.MALE);
     }
 }

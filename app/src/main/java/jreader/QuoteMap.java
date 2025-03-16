@@ -9,11 +9,13 @@ import com.microsoft.cognitiveservices.speech.VoiceInfo;
 
 public class QuoteMap {
     private final HashMap<String, List<Integer>> quotes;
-    private HashMap<List<Integer>, VoiceInfo> voices;
+    private final HashMap<List<Integer>, VoiceInfo> voices;
+    private final HashMap<String, VoiceInfo> entites;
 
     public QuoteMap(){ 
-        this.quotes = new HashMap<>(); // Correct initialization
-        this.voices = new HashMap<>(); // Correct initialization
+        this.quotes = new HashMap<>();
+        this.voices = new HashMap<>();
+        this.entites = new HashMap<>();
     }
 
     public HashMap<String, List<Integer>> getQuotesHashMap() {
@@ -24,12 +26,20 @@ public class QuoteMap {
         return this.voices;
     }
 
+    public HashMap<String, VoiceInfo> getEntitiesHashMap() {
+        return this.entites;
+    }
+
     public void addQuote(String quote, List<Integer> sentenceIndices) {
         this.quotes.put(quote.trim(), sentenceIndices);
     }
 
     public void addVoice(List<Integer> sentenceIndices, VoiceInfo voice) {
         this.voices.put(sentenceIndices, voice);
+    }
+
+    public void addEntity(String chain, VoiceInfo voice) {
+        this.entites.put(chain, voice);
     }
 
     public List<Integer> getQuoteToIndex(String quote) {
@@ -39,6 +49,10 @@ public class QuoteMap {
 
     public VoiceInfo getIndexToVoice(List<Integer> index) {
         return this.voices.get(index);
+    }
+
+    public VoiceInfo getEntityToVoice(String chain) {
+        return this.entites.get(chain);
     }
 
     public List<Map.Entry<String, List<Integer>>> getAllQuoteEntries() {

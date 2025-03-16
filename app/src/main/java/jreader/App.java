@@ -9,21 +9,24 @@ public class App {
     public static void main(String[] args) throws InterruptedException, ExecutionException {
         Narrator narrator = new Narrator();
 
-        String text = "John walked into the cafe and spotted his friend Emily. "
+        String text1 = "John walked into the cafe and spotted his friend Emily. "
         + "\"Hey, how's your day going?\" he asked with a smile. "
-        + "\"It's been busy,\" She replied, taking a sip of her coffee. \"I had back-to-back meetings all morning.\" ";
+        + "\"It's been busy,\" She replied, taking a sip of her coffee. \"I had back-to-back meetings all morning.\" "
+
         /*
         + "As they chatted, a waiter approached them. \"Would you like to order anything else?\" he inquired. "
         + "John shook his head. \"No, just the check, please.\" "
+        */
         + "Emily glanced at her phone. \"I should get going soon. He's expecting me at the office,\" she said. "
         + "\"Who's expecting you?\" John asked, raising an eyebrow. "
-        + "\"Oh, my manager, Mr. Thompson,\" she clarified. \"He wanted an update on the project.\" "
-        + "The waiter returned with the bill. \"Take your time,\" he said before walking away. "
+        + "\"Oh, my manager, Mr. Thompson,\" she clarified. \"He wanted an update on the project.\" ";
+    
+        String text2 = "The waiter returned with the bill. \"Take your time,\" he said before walking away. "
         + "John looked at Emily. \"Well, let's catch up again soon.\" "
-        + "\"Definitely,\" she said with a smile."; 
-        */
+        + "\"Definitely,\" Emily said with a smile."; 
 
-        narrator.narrateText(text);
+        narrator.narrateText(text1);
+        narrator.narrateText(text2);
         //finder.processText(text);  // Call the method to process text
         //VoiceInfo speaker = finder.getQuoteSpeaker("\"Oh, my manager, Mr. Thompson,\"");
         

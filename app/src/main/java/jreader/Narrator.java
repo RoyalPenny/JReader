@@ -1,60 +1,66 @@
 package jreader;
 
 import java.text.BreakIterator;
-import java.util.Locale;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Narrator {
-    public Narrator(){
+import com.microsoft.cognitiveservices.speech.VoiceInfo;
 
+public class Narrator {
+
+    private VoiceInfo narrator;
+    private static final Pattern quotePattern = Pattern.compile("\"([^\"]+)\"");
+    public Narrator(){
+        this.narrator = null;
     }
 
     public void narrateText(String text) throws InterruptedException, ExecutionException{
         FindQuotes finder = new FindQuotes();  // Create an instance of FindQuotes
         SpeechSynthesis synthesiser = new SpeechSynthesis();
-        BreakIterator sentenceIterator = BreakIterator.getSentenceInstance(Locale.ENGLISH);
-        Pattern quotePattern = Pattern.compile("\"(.*?)\"");
-        
-        finder.processText(text);  // Call the method to process text
-        finder.setNarrator();
+        BreakIterator sentenceIterator = BreakIterator.getSentenceInstance();
         sentenceIterator.setText(text);
+
+        boolean insideQuote = false;  // Track if we're inside a quote
+        StringBuilder sentenceBuffer = new StringBuilder();
 
         int start = sentenceIterator.first();
         for (int end = sentenceIterator.next(); end != BreakIterator.DONE; start = end, end = sentenceIterator.next()) {
             String sentence = text.substring(start, end).trim();
+
+            // Check if the sentence contains a quote
             Matcher matcher = quotePattern.matcher(sentence);
-            System.out.println("Original Sentence: " + sentence);
 
-            int lastMatchEnd = 0; // Keeps track of where the last match ended
+            if (matcher.find()) {
+                insideQuote = !insideQuote;  // Toggle insideQuote on/off
+            }
 
-            while (matcher.find()) {
-                int quoteStart = matcher.start();
-                int quoteEnd = matcher.end();
-
-                // Get the text before the quote
-                String beforeQuote = sentence.substring(lastMatchEnd, quoteStart).trim();
-                if (!beforeQuote.isEmpty()) {
-                    System.out.println("Before Quote: " + beforeQuote);
-                    synthesiser.GenerateTTS(beforeQuote, finder.getNarrator().getShortName());
+            if (insideQuote) {
+                // If inside a quote, add to the buffer without breaking
+                sentenceBuffer.append(" ").append(sentence);
+            } else {
+                // If not inside a quote, print the buffer (if any) and reset it
+                if (sentenceBuffer.length() > 0) {
+                    sentenceBuffer.append(" ").append(sentence);
+                    System.out.println("Quote: " + sentenceBuffer.toString().trim());
+                    sentenceBuffer.setLength(0);
+                } else {
+                    System.out.println("Sentence: " + sentence);
                 }
+            }
+        }
+
+            //synthesiser.GenerateTTS(beforeQuote, this.narrator.getShortName());
 
                 // Extract the quote and process it
-                String quote = matcher.group(1);
-                System.out.println(" -> Quote: " + quote);
-                synthesiser.GenerateTTS(quote, finder.getQuoteSpeaker("\"" + quote + "\"").getShortName());
+                
+            //synthesiser.GenerateTTS(quote, finder.getQuoteSpeaker("\"" + quote + "\"").getShortName());
 
-                // Move past the quote
-                lastMatchEnd = quoteEnd;
-            }
+           
+            
+            //synthesiser.GenerateTTS(afterQuote, this.narrator.getShortName());
 
-            // Get the remaining part of the sentence after the last quote
-            String afterQuote = sentence.substring(lastMatchEnd).trim();
-            if (!afterQuote.isEmpty()) {
-                System.out.println("After Quote: " + afterQuote);
-                synthesiser.GenerateTTS(afterQuote, finder.getNarrator().getShortName());
-            }
 
             System.out.println("-----"); // Separator for clarity
         
@@ -64,6 +70,17 @@ public class Narrator {
             System.out.println("Gender: " + voice.getGender());
             System.out.println("======================");
         }*/
+    }
+
+    private static String extractQuotes(String text, List<String> extractedQuotes) {
+        Matcher matcher = quotePattern.matcher(text);
+        StringBuffer sb = new StringBuffer();
+
+        while (matcher.find()) {
+            extractedQuotes.add(matcher.group()); // Store full quote
+            matcher.appendReplacement(sb, "[QUOTE]"); // Replace with placeholder
         }
+        matcher.appendTail(sb);
+        return sb.toString();
     }
 }
