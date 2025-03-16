@@ -9,20 +9,21 @@ public class App {
     public static void main(String[] args) throws InterruptedException, ExecutionException {
         Narrator narrator = new Narrator();
 
-        String text1 = "John walked into the cafe and spotted his friend Emily. "
+        String text1 = "John walked into the cafe and spotted Emily. "
         + "\"Hey, how's your day going?\" he asked with a smile. "
-        + "\"It's been busy,\" She replied, taking a sip of her coffee. \"I had back-to-back meetings all morning.\" "
+        + "\"It's been busy,\" She replied, taking a sip of her coffee. \"I had back-to-back meetings all morning.\" ";
 
         /*
         + "As they chatted, a waiter approached them. \"Would you like to order anything else?\" he inquired. "
         + "John shook his head. \"No, just the check, please.\" "
+        
+        + "Emily glanced at her phone. \"I should get going soon. He's expecting me at the office,\" she said."
+        + "\"Who's expecting you?\" John asked, raising an eyebrow."
+        + "\"Oh, my manager, Mr. Thompson,\" she clarified. \"He wanted an update on the project.\"";
         */
-        + "Emily glanced at her phone. \"I should get going soon. He's expecting me at the office,\" she said. "
-        + "\"Who's expecting you?\" John asked, raising an eyebrow. "
-        + "\"Oh, my manager, Mr. Thompson,\" she clarified. \"He wanted an update on the project.\" ";
     
         String text2 = "The waiter returned with the bill. \"Take your time,\" he said before walking away. "
-        + "John looked at Emily. \"Well, let's catch up again soon.\" "
+        + "John looked at Emily and he said \"Well, let's catch up again soon.\" "
         + "\"Definitely,\" Emily said with a smile."; 
 
         narrator.narrateText(text1);

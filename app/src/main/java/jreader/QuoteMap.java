@@ -8,11 +8,11 @@ import java.util.Map;
 import com.microsoft.cognitiveservices.speech.VoiceInfo;
 
 public class QuoteMap {
-    private final HashMap<String, List<Integer>> quotes;
-    private final HashMap<List<Integer>, VoiceInfo> voices;
+    private HashMap<String, List<Integer>> quotes;
+    private HashMap<List<Integer>, VoiceInfo> voices;
     private final HashMap<String, VoiceInfo> entites;
 
-    public QuoteMap(){ 
+    public QuoteMap() {
         this.quotes = new HashMap<>();
         this.voices = new HashMap<>();
         this.entites = new HashMap<>();
@@ -53,6 +53,14 @@ public class QuoteMap {
 
     public VoiceInfo getEntityToVoice(String chain) {
         return this.entites.get(chain);
+    }
+
+    public void clearVoices() {
+        this.voices = new HashMap<>();
+    }
+
+    public void clearQuotes() {
+        this.quotes = new HashMap<>();
     }
 
     public List<Map.Entry<String, List<Integer>>> getAllQuoteEntries() {

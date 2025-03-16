@@ -11,45 +11,69 @@ import com.microsoft.cognitiveservices.speech.VoiceInfo;
 public class Narrator {
 
     private VoiceInfo narrator;
-    private static final Pattern quotePattern = Pattern.compile("\"([^\"]+)\"");
-    public Narrator(){
-        this.narrator = null;
+    private FindQuotes finder;
+    
+        public Narrator(){
+            this.finder = new FindQuotes();  // Create an instance of FindQuotes
+            this.narrator = finder.getNarrator();
     }
 
     public void narrateText(String text) throws InterruptedException, ExecutionException{
-        FindQuotes finder = new FindQuotes();  // Create an instance of FindQuotes
         SpeechSynthesis synthesiser = new SpeechSynthesis();
-        BreakIterator sentenceIterator = BreakIterator.getSentenceInstance();
-        sentenceIterator.setText(text);
+        
+        Pattern quotePattern = Pattern.compile("\"([^\"]*)\"");
+        Matcher matcher = quotePattern.matcher(text);
 
-        boolean insideQuote = false;  // Track if we're inside a quote
-        StringBuilder sentenceBuffer = new StringBuilder();
+        BreakIterator wordIterator = BreakIterator.getWordInstance();
 
-        int start = sentenceIterator.first();
-        for (int end = sentenceIterator.next(); end != BreakIterator.DONE; start = end, end = sentenceIterator.next()) {
-            String sentence = text.substring(start, end).trim();
+        finder.processText(text);  // Call the method to process text
 
-            // Check if the sentence contains a quote
-            Matcher matcher = quotePattern.matcher(sentence);
+        wordIterator.setText(text);
 
-            if (matcher.find()) {
-                insideQuote = !insideQuote;  // Toggle insideQuote on/off
+        StringBuilder sentenceBuilder = new StringBuilder();
+        int start = wordIterator.first();
+        boolean printQuote = true;
+
+        for (int end = wordIterator.next(); end != BreakIterator.DONE; start = end, end = wordIterator.next()) {
+            // Skip quoted text ranges
+            boolean insideQuote = false;
+            matcher.reset();
+
+            while (matcher.find()) {  
+                if (start > matcher.start() && end < matcher.end()) {
+                    if(printQuote){
+                        System.out.println("Quoted text: " + matcher.group());
+                        synthesiser.GenerateTTS(matcher.group(), finder.getQuoteSpeaker(matcher.group()).getShortName());
+                        printQuote = false;
+                    }
+                    insideQuote = true;
+                    break;
+                }
             }
 
-            if (insideQuote) {
-                // If inside a quote, add to the buffer without breaking
-                sentenceBuffer.append(" ").append(sentence);
-            } else {
-                // If not inside a quote, print the buffer (if any) and reset it
-                if (sentenceBuffer.length() > 0) {
-                    sentenceBuffer.append(" ").append(sentence);
-                    System.out.println("Quote: " + sentenceBuffer.toString().trim());
-                    sentenceBuffer.setLength(0);
-                } else {
-                    System.out.println("Sentence: " + sentence);
+            if (!insideQuote) {
+                printQuote = true;
+                String word = text.substring(start, end);
+                if (!word.isEmpty()) { 
+                    if(!word.equals("\"")){
+                        sentenceBuilder.append(word);
+                    }
+                    
+                    // Stop at a period and print the collected sentence
+                    if (word.equals(".") || word.equals("\"")) {
+                        System.out.println("Sentence: " + sentenceBuilder.toString().trim());
+                        synthesiser.GenerateTTS(sentenceBuilder.toString().trim(), this.narrator.getShortName());
+                        sentenceBuilder.setLength(0); // Reset for the next sentence
+                    }
                 }
             }
         }
+
+        // Print the last sentence if it doesn't end with a period
+        if (sentenceBuilder.length() > 0) {
+            System.out.println("Last sentence: " + sentenceBuilder.toString().trim());
+        }
+
 
             //synthesiser.GenerateTTS(beforeQuote, this.narrator.getShortName());
 
@@ -60,9 +84,6 @@ public class Narrator {
            
             
             //synthesiser.GenerateTTS(afterQuote, this.narrator.getShortName());
-
-
-            System.out.println("-----"); // Separator for clarity
         
         /*for (VoiceInfo voice : speech.getNeutralSpeakers()) {
             System.out.println("Voice Name: " + voice.getName());
@@ -70,17 +91,5 @@ public class Narrator {
             System.out.println("Gender: " + voice.getGender());
             System.out.println("======================");
         }*/
-    }
-
-    private static String extractQuotes(String text, List<String> extractedQuotes) {
-        Matcher matcher = quotePattern.matcher(text);
-        StringBuffer sb = new StringBuffer();
-
-        while (matcher.find()) {
-            extractedQuotes.add(matcher.group()); // Store full quote
-            matcher.appendReplacement(sb, "[QUOTE]"); // Replace with placeholder
-        }
-        matcher.appendTail(sb);
-        return sb.toString();
     }
 }

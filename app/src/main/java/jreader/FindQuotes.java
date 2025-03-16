@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 import com.microsoft.cognitiveservices.speech.VoiceInfo;
 
@@ -31,6 +33,7 @@ public class FindQuotes {
         this.pipeline = new StanfordCoreNLP(props);
         this.quoteMap = new QuoteMap();
         this.speechSynthesiser = new SpeechSynthesis();
+        speechSynthesiser.generateSpeakerLists();
     }
 
     // Method to process text and extract quotes
@@ -39,7 +42,8 @@ public class FindQuotes {
         CoreDocument coreDocument = pipeline.processToCoreDocument(text);
         Map<Integer, CorefChain> corefChains = coreDocument.corefChains();
 
-        speechSynthesiser.generateSpeakerLists();
+        this.quoteMap.clearQuotes();
+        this.quoteMap.clearVoices();
         
         for (CorefChain chain : corefChains.values()) {        
             //chain.getMentionsWithSameHead(sentenceNumber, headIndex)
@@ -59,15 +63,15 @@ public class FindQuotes {
                 }
             }
      
+            System.out.println("Entity: " + chain.getRepresentativeMention().mentionSpan + " || Gender: " + entityGender.toString());
             System.out.println("============");
-            System.out.println("Entity: " + chain.getRepresentativeMention().toString() + " Gender: " + entityGender.toString());
             VoiceInfo voice;
 
-            if(!this.quoteMap.getEntitiesHashMap().containsKey(chain.getRepresentativeMention().toString())){
+            if(!this.quoteMap.getEntitiesHashMap().containsKey(chain.getRepresentativeMention().mentionSpan)){
                     voice = speechSynthesiser.getSpeakerVoice(entityGender);
-                	this.quoteMap.addEntity((chain.getRepresentativeMention()).toString(), voice);
+                	this.quoteMap.addEntity((chain.getRepresentativeMention()).mentionSpan, voice);
             } else {
-                voice = this.quoteMap.getEntityToVoice(chain.getRepresentativeMention().toString());
+                voice = this.quoteMap.getEntityToVoice(chain.getRepresentativeMention().mentionSpan);
             }
 
             for (CorefMention mention : chain.getMentionsInTextualOrder()){
@@ -94,6 +98,10 @@ public class FindQuotes {
             });
 
         }
+
+        System.out.println("Entities Hash: " + this.quoteMap.getEntitiesHashMap());
+        System.out.println("Quotes Hash: " + this.quoteMap.getQuotesHashMap());
+        System.out.println("Voices Hash: " + this.quoteMap.getVoicesHashMap());
     }
 
     public VoiceInfo getQuoteSpeaker(String quote){
