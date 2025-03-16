@@ -11,7 +11,8 @@ public class App {
 
         String text1 = "John walked into the cafe and spotted Emily. "
         + "\"Hey, how's your day going?\" he asked with a smile. "
-        + "\"It's been busy,\" She replied, taking a sip of her coffee. \"I had back-to-back meetings all morning.\" ";
+        + "\"It's been busy,\" She replied, taking a sip of her coffee. \"I had back-to-back meetings all morning.\" "
+        + "Emily also loudly says \"I am a stegosaurus and I'm a vegetarian rarrrr.\"" ;
 
         /*
         + "As they chatted, a waiter approached them. \"Would you like to order anything else?\" he inquired. "

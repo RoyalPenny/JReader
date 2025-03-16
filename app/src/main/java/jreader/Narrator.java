@@ -60,7 +60,7 @@ public class Narrator {
                     }
                     
                     // Stop at a period and print the collected sentence
-                    if (word.equals(".") || word.equals("\"")) {
+                    if ((word.equals(".") || word.equals("\"")) && !sentenceBuilder.toString().trim().equals("")) {
                         System.out.println("Sentence: " + sentenceBuilder.toString().trim());
                         synthesiser.GenerateTTS(sentenceBuilder.toString().trim(), this.narrator.getShortName());
                         sentenceBuilder.setLength(0); // Reset for the next sentence
