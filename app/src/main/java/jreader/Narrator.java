@@ -2,6 +2,7 @@ package jreader;
 
 import java.text.BreakIterator;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,7 +15,7 @@ public class Narrator {
     private FindQuotes finder;
     
         public Narrator(){
-            this.finder = new FindQuotes();  // Create an instance of FindQuotes
+            this.finder = new FindQuotes();
             this.narrator = finder.getNarrator();
     }
 
@@ -43,7 +44,7 @@ public class Narrator {
                 if (start > matcher.start() && end < matcher.end()) {
                     if(printQuote){
                         System.out.println("Quoted text: " + matcher.group());
-                        synthesiser.GenerateTTS(matcher.group(), finder.getQuoteSpeaker(matcher.group()).getShortName());
+                        synthesiser.GenerateTTSAsync(matcher.group(), finder.getQuoteSpeaker(matcher.group()).getShortName());
                         printQuote = false;
                     }
                     insideQuote = true;
@@ -62,11 +63,13 @@ public class Narrator {
                     // Stop at a period and print the collected sentence
                     if ((word.equals(".") || word.equals("\"")) && !sentenceBuilder.toString().trim().equals("")) {
                         System.out.println("Sentence: " + sentenceBuilder.toString().trim());
-                        synthesiser.GenerateTTS(sentenceBuilder.toString().trim(), this.narrator.getShortName());
+                        synthesiser.GenerateTTSAsync(sentenceBuilder.toString().trim(), this.narrator.getShortName());
                         sentenceBuilder.setLength(0); // Reset for the next sentence
                     }
                 }
             }
+
+            synthesiser.getTtsQueue().get();
         }
 
         // Print the last sentence if it doesn't end with a period
