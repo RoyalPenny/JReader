@@ -38,8 +38,8 @@ public class QuoteMap {
         this.associatedEntity.put(sentenceIndices, entity);
     }
 
-    public void addEntity(String chain, VoiceInfo voice) {
-        this.entites.put(chain, voice);
+    public void addEntity(String entity, VoiceInfo voice) {
+        this.entites.put(entity, voice);
     }
 
     public List<Integer> getQuoteToIndex(String quote) {
@@ -51,8 +51,8 @@ public class QuoteMap {
         return this.associatedEntity.get(index);
     }
 
-    public VoiceInfo getEntityToVoice(String chain) {
-        return this.entites.get(chain);
+    public VoiceInfo getEntityToVoice(String entity) {
+        return this.entites.get(entity);
     }
 
     public void clearAssociatedEntity() {
@@ -61,6 +61,10 @@ public class QuoteMap {
 
     public void clearQuotes() {
         this.quotes = new HashMap<>();
+    }
+
+    public void changeVoice(String entity, VoiceInfo voice) {
+        this.entites.put(entity, voice);
     }
 
     public List<Map.Entry<String, List<Integer>>> getAllQuoteEntries() {
