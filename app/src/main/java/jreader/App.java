@@ -9,6 +9,9 @@ public class App {
     public static void main(String[] args) throws InterruptedException, ExecutionException {
         Narrator narrator = new Narrator();
 
+        //BookReader bookReader = new BookReader();
+        //bookReader.readBook();
+
         String text1 = "John walked into the cafe and spotted Emily. "
         + "\"Hey, how's your day going?\" he asked with a smile. "
         + "\"It's been busy,\" She replied, taking a sip of her coffee. \"I had back-to-back meetings all morning.\" "
@@ -29,15 +32,8 @@ public class App {
 
         narrator.narrateText(text1);
         narrator.narrateText(text2);
-        //finder.processText(text);  // Call the method to process text
-        //VoiceInfo speaker = finder.getQuoteSpeaker("\"Oh, my manager, Mr. Thompson,\"");
         
-        /*for (VoiceInfo voice : speech.getNeutralSpeakers()) {
-            System.out.println("Voice Name: " + voice.getName());
-            System.out.println("Language: " + voice.getLocale());
-            System.out.println("Gender: " + voice.getGender());
-            System.out.println("======================");
-        }*/
+        
 
         System.exit(0);
     }

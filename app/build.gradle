@@ -33,6 +33,7 @@ dependencies {
     implementation group: 'com.microsoft.cognitiveservices.speech', name: 'client-sdk', version: "1.42.0", ext: "jar"
     implementation 'ch.qos.logback:logback-classic:1.2.6'  // Logback Logger (for full-featured logging)
     implementation 'nl.siegmann.epublib:epublib-core:3.1'
+    implementation 'org.jsoup:jsoup:1.14.3'
 }
 
 // Apply a specific Java toolchain to ease working on different environments.

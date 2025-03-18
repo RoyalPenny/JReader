@@ -42,11 +42,15 @@ public class SpeechSynthesis {
     }
 
     public void GenerateTTS(String text, String speaker) throws InterruptedException, ExecutionException {
+        GenerateTTS(text, speaker, "");
+    }
 
+    public void GenerateTTS(String text, String speaker, String style) throws InterruptedException, ExecutionException {
+
+        SpeechSynthesisResult speechSynthesisResult;
         SpeechConfig speechConfig = SpeechConfig.fromSubscription(speechKey, speechRegion);
 
         speechConfig.setSpeechSynthesisVoiceName(speaker); 
-
          
         try (SpeechSynthesizer speechSynthesizer = new SpeechSynthesizer(speechConfig, null)) {
             if (text.isEmpty())
@@ -54,7 +58,22 @@ public class SpeechSynthesis {
                 return;
             }
 
-            SpeechSynthesisResult speechSynthesisResult = speechSynthesizer.SpeakTextAsync(text).get();
+            if(style.isBlank())
+            {
+                speechSynthesisResult = speechSynthesizer.SpeakTextAsync(text).get();
+            } else {
+                String ssml = "<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' " +
+                          "xmlns:mstts='http://www.w3.org/2001/mstts' xml:lang='en-US'>" +
+                          "<voice name='" + speaker + "'>" +
+                          "<mstts:express-as style='" + style + "'>" +
+                          text +
+                          "</mstts:express-as>" +
+                          "</voice></speak>";
+
+                // Use SpeakSsmlAsync to synthesize SSML input
+                speechSynthesisResult = speechSynthesizer.SpeakSsmlAsync(ssml).get();
+            }
+            
 
             if (speechSynthesisResult.getReason() == ResultReason.SynthesizingAudioCompleted) {
                 System.out.println("Speech synthesized to speaker for text [" + text + "]");

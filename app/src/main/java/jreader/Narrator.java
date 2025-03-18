@@ -1,7 +1,6 @@
 package jreader;
 
 import java.text.BreakIterator;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -62,7 +61,7 @@ public class Narrator {
                     // Stop at a period and print the collected sentence
                     if ((word.equals(".") || word.equals("\"")) && !sentenceBuilder.toString().trim().equals("")) {
                         System.out.println("Sentence: " + sentenceBuilder.toString().trim());
-                        synthesiser.GenerateTTS(sentenceBuilder.toString().trim(), this.narrator.getShortName());
+                        synthesiser.GenerateTTS(sentenceBuilder.toString().trim(), this.narrator.getShortName(), "narration-relaxed");
                         sentenceBuilder.setLength(0); // Reset for the next sentence
                     }
                 }
