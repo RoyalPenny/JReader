@@ -43,7 +43,7 @@ public class FindQuotes {
         Map<Integer, CorefChain> corefChains = coreDocument.corefChains();
 
         this.quoteMap.clearQuotes();
-        this.quoteMap.clearVoices();
+        this.quoteMap.clearAssociatedEntity();
         
         for (CorefChain chain : corefChains.values()) {        
             //chain.getMentionsWithSameHead(sentenceNumber, headIndex)
@@ -70,8 +70,6 @@ public class FindQuotes {
             if(!this.quoteMap.getEntitiesHashMap().containsKey(chain.getRepresentativeMention().mentionSpan)){
                     voice = speechSynthesiser.getSpeakerVoice(entityGender);
                 	this.quoteMap.addEntity((chain.getRepresentativeMention()).mentionSpan, voice);
-            } else {
-                voice = this.quoteMap.getEntityToVoice(chain.getRepresentativeMention().mentionSpan);
             }
 
             for (CorefMention mention : chain.getMentionsInTextualOrder()){
@@ -79,7 +77,7 @@ public class FindQuotes {
                 System.out.println(mention.corefClusterID);
                 System.out.println(mention.sentNum + ", " + mention.headIndex);
 
-                this.quoteMap.addVoice(Arrays.asList(mention.sentNum, mention.headIndex), voice);
+                this.quoteMap.addAssociatedEntity(Arrays.asList(mention.sentNum, mention.headIndex), chain.getRepresentativeMention().mentionSpan);
             }
         }
 
@@ -99,14 +97,15 @@ public class FindQuotes {
 
         }
 
-        System.out.println("Entities Hash: " + this.quoteMap.getEntitiesHashMap());
-        System.out.println("Quotes Hash: " + this.quoteMap.getQuotesHashMap());
-        System.out.println("Voices Hash: " + this.quoteMap.getVoicesHashMap());
+        //System.out.println("Entities Hash: " + this.quoteMap.getEntitiesHashMap());
+        //System.out.println("Quotes Hash: " + this.quoteMap.getQuotesHashMap());
+        //System.out.println("Voices Hash: " + this.quoteMap.getVoicesHashMap());
     }
 
     public VoiceInfo getQuoteSpeaker(String quote){
         List<Integer> quoteIndex = this.quoteMap.getQuoteToIndex(quote);
-        VoiceInfo voice = this.quoteMap.getIndexToVoice(quoteIndex);
+        String entity = this.quoteMap.getIndexToAssocciatedEntity(quoteIndex);
+        VoiceInfo voice = this.quoteMap.getEntityToVoice(entity);
         System.out.println(quote + " is voiced by " + voice.getName());
         return voice;
     }

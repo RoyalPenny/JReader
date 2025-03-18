@@ -9,12 +9,12 @@ import com.microsoft.cognitiveservices.speech.VoiceInfo;
 
 public class QuoteMap {
     private HashMap<String, List<Integer>> quotes;
-    private HashMap<List<Integer>, VoiceInfo> voices;
+    private HashMap<List<Integer>, String> associatedEntity;
     private final HashMap<String, VoiceInfo> entites;
 
     public QuoteMap() {
         this.quotes = new HashMap<>();
-        this.voices = new HashMap<>();
+        this.associatedEntity = new HashMap<>();
         this.entites = new HashMap<>();
     }
 
@@ -22,8 +22,8 @@ public class QuoteMap {
         return this.quotes;
     }
 
-    public HashMap<List<Integer>, VoiceInfo> getVoicesHashMap() {
-        return this.voices;
+    public HashMap<List<Integer>, String> getassociatedEntityHashMap() {
+        return this.associatedEntity;
     }
 
     public HashMap<String, VoiceInfo> getEntitiesHashMap() {
@@ -34,8 +34,8 @@ public class QuoteMap {
         this.quotes.put(quote.trim(), sentenceIndices);
     }
 
-    public void addVoice(List<Integer> sentenceIndices, VoiceInfo voice) {
-        this.voices.put(sentenceIndices, voice);
+    public void addAssociatedEntity(List<Integer> sentenceIndices, String entity) {
+        this.associatedEntity.put(sentenceIndices, entity);
     }
 
     public void addEntity(String chain, VoiceInfo voice) {
@@ -47,16 +47,16 @@ public class QuoteMap {
         return this.quotes.get(quote);
     }
 
-    public VoiceInfo getIndexToVoice(List<Integer> index) {
-        return this.voices.get(index);
+    public String getIndexToAssocciatedEntity(List<Integer> index) {
+        return this.associatedEntity.get(index);
     }
 
     public VoiceInfo getEntityToVoice(String chain) {
         return this.entites.get(chain);
     }
 
-    public void clearVoices() {
-        this.voices = new HashMap<>();
+    public void clearAssociatedEntity() {
+        this.associatedEntity = new HashMap<>();
     }
 
     public void clearQuotes() {
