@@ -2,7 +2,6 @@ package jreader;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -24,46 +23,42 @@ public class SpeechSynthesis {
     private List<VoiceInfo> maleSpeakers;
     private List<VoiceInfo> femaleSpeakers;
     private List<VoiceInfo> neutralSpeakers;
-    private CompletableFuture<Void> ttsQueue;
 
     public SpeechSynthesis() {
         this.maleSpeakers = new ArrayList<>();
         this.femaleSpeakers = new ArrayList<>();
         this.neutralSpeakers = new ArrayList<>();
-        this.ttsQueue = CompletableFuture.completedFuture(null);
     }
 
-    public CompletableFuture<Void> GenerateTTSAsync(String text, String speaker) {
-        ttsQueue = ttsQueue.thenRunAsync(() -> {
-            try {
-                SpeechConfig speechConfig = SpeechConfig.fromSubscription(speechKey, speechRegion);
-                speechConfig.setSpeechSynthesisVoiceName(speaker);
+    public void GenerateTTS(String text, String speaker) throws InterruptedException, ExecutionException {
 
-                try (SpeechSynthesizer speechSynthesizer = new SpeechSynthesizer(speechConfig)) {
-                    if (text.isEmpty()) {
-                        return;
-                    }
+        SpeechConfig speechConfig = SpeechConfig.fromSubscription(speechKey, speechRegion);
 
-                    SpeechSynthesisResult speechSynthesisResult = speechSynthesizer.SpeakTextAsync(text).get();
+        speechConfig.setSpeechSynthesisVoiceName(speaker); 
 
-                    if (speechSynthesisResult.getReason() == ResultReason.SynthesizingAudioCompleted) {
-                        System.out.println("Speech synthesized to speaker for text [" + text + "]");
-                    } else if (speechSynthesisResult.getReason() == ResultReason.Canceled) {
-                        SpeechSynthesisCancellationDetails cancellation = SpeechSynthesisCancellationDetails.fromResult(speechSynthesisResult);
-                        System.out.println("CANCELED: Reason=" + cancellation.getReason());
-
-                        if (cancellation.getReason() == CancellationReason.Error) {
-                            System.out.println("CANCELED: ErrorCode=" + cancellation.getErrorCode());
-                            System.out.println("CANCELED: ErrorDetails=" + cancellation.getErrorDetails());
-                            System.out.println("CANCELED: Did you set the speech resource key and region values?");
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+         
+        try (SpeechSynthesizer speechSynthesizer = new SpeechSynthesizer(speechConfig)) {
+            if (text.isEmpty())
+            {
+                return;
             }
-        });
-        return ttsQueue;
+
+            SpeechSynthesisResult speechSynthesisResult = speechSynthesizer.SpeakTextAsync(text).get();
+
+            if (speechSynthesisResult.getReason() == ResultReason.SynthesizingAudioCompleted) {
+                System.out.println("Speech synthesized to speaker for text [" + text + "]");
+            }
+            else if (speechSynthesisResult.getReason() == ResultReason.Canceled) {
+                SpeechSynthesisCancellationDetails cancellation = SpeechSynthesisCancellationDetails.fromResult(speechSynthesisResult);
+                System.out.println("CANCELED: Reason=" + cancellation.getReason());
+
+                if (cancellation.getReason() == CancellationReason.Error) {
+                    System.out.println("CANCELED: ErrorCode=" + cancellation.getErrorCode());
+                    System.out.println("CANCELED: ErrorDetails=" + cancellation.getErrorDetails());
+                    System.out.println("CANCELED: Did you set the speech resource key and region values?");
+                }
+            }
+        }
     }
 
     public void generateSpeakerLists(){
@@ -91,10 +86,6 @@ public class SpeechSynthesis {
         } catch (Exception e) {
             System.out.println("Failed to get speakers");
         }
-    }
-
-    public CompletableFuture<Void> getTtsQueue() {
-        return ttsQueue;
     }
 
     public List<VoiceInfo> getMaleSpeakers(){
