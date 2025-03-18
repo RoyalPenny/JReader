@@ -74,6 +74,7 @@ public class Narrator {
             System.out.println("Last sentence: " + sentenceBuilder.toString().trim());
         }
 
+        synthesiser.getAudio().get();  // Wait for the audio to finish playing
 
             //synthesiser.GenerateTTS(beforeQuote, this.narrator.getShortName());
 

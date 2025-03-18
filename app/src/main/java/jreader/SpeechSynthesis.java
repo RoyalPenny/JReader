@@ -179,4 +179,8 @@ public class SpeechSynthesis {
             }
         });
     }
+
+    public CompletableFuture<Void> getAudio(){
+        return this.audio;
+    }
 }
