@@ -4,8 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 
 import com.microsoft.cognitiveservices.speech.VoiceInfo;
 
@@ -102,15 +100,17 @@ public class FindQuotes {
         //System.out.println("Voices Hash: " + this.quoteMap.getVoicesHashMap());
     }
 
-    public VoiceInfo getQuoteSpeaker(String quote){
+    public SpeakerEntity getQuoteSpeaker(String quote){
         List<Integer> quoteIndex = this.quoteMap.getQuoteToIndex(quote);
-        String entity = this.quoteMap.getIndexToAssocciatedEntity(quoteIndex);
-        VoiceInfo voice = this.quoteMap.getEntityToVoice(entity);
+        String entityName = this.quoteMap.getIndexToAssocciatedEntity(quoteIndex);
+        SpeakerEntity entity = this.quoteMap.getEntityNameToEntity(entityName);
+        VoiceInfo voice = entity.getVoice();
         System.out.println(quote + " is voiced by " + voice.getName());
-        return voice;
+        return entity;
     }
 
-    public VoiceInfo getNarrator(){
-        return speechSynthesiser.getSpeakerVoice(Gender.MALE);
+    public SpeakerEntity getNarrator(){
+        SpeakerEntity narrator = new SpeakerEntity(speechSynthesiser.getSpeakerVoice(Gender.MALE), "narration-relaxed");
+        return narrator;
     }
 }

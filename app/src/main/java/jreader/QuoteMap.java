@@ -10,7 +10,7 @@ import com.microsoft.cognitiveservices.speech.VoiceInfo;
 public class QuoteMap {
     private HashMap<String, List<Integer>> quotes;
     private HashMap<List<Integer>, String> associatedEntity;
-    private final HashMap<String, VoiceInfo> entites;
+    private final HashMap<String, SpeakerEntity> entites;
 
     public QuoteMap() {
         this.quotes = new HashMap<>();
@@ -26,7 +26,7 @@ public class QuoteMap {
         return this.associatedEntity;
     }
 
-    public HashMap<String, VoiceInfo> getEntitiesHashMap() {
+    public HashMap<String, SpeakerEntity> getEntitiesHashMap() {
         return this.entites;
     }
 
@@ -39,7 +39,13 @@ public class QuoteMap {
     }
 
     public void addEntity(String entity, VoiceInfo voice) {
-        this.entites.put(entity, voice);
+        SpeakerEntity speakerEntity = new SpeakerEntity(voice, "");
+        this.entites.put(entity, speakerEntity);
+    }
+
+    public void addEntity(String entity, VoiceInfo voice, String style) {
+        SpeakerEntity speakerEntity = new SpeakerEntity(voice, style);
+        this.entites.put(entity, speakerEntity);
     }
 
     public List<Integer> getQuoteToIndex(String quote) {
@@ -51,7 +57,7 @@ public class QuoteMap {
         return this.associatedEntity.get(index);
     }
 
-    public VoiceInfo getEntityToVoice(String entity) {
+    public SpeakerEntity getEntityNameToEntity(String entity) {
         return this.entites.get(entity);
     }
 
@@ -63,8 +69,9 @@ public class QuoteMap {
         this.quotes = new HashMap<>();
     }
 
+    //Test
     public void changeVoice(String entity, VoiceInfo voice) {
-        this.entites.put(entity, voice);
+        this.entites.get(entity).setVoice(voice);
     }
 
     public List<Map.Entry<String, List<Integer>>> getAllQuoteEntries() {

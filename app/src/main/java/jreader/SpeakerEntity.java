@@ -1,30 +1,30 @@
 package jreader;
 
-import edu.stanford.nlp.coref.data.Dictionaries.Gender;
+import com.microsoft.cognitiveservices.speech.VoiceInfo;
 
 public class SpeakerEntity {
 
-    private Integer corefClusterID;
-    private Gender gender;
+    private VoiceInfo voice;
+    private String style;
 
-    public SpeakerEntity(){
-        this.corefClusterID = -1;
-        this.gender = Gender.UNKNOWN;
+    public SpeakerEntity(VoiceInfo voice, String style) {
+        this.voice = voice;
+        this.style = style;
     }
 
-    public void setGender(Gender newGender){
-        gender = newGender;
+    public VoiceInfo getVoice() {
+        return voice;
     }
 
-    public void setCorefClusterID(Integer newCorefClusterID){
-        corefClusterID = newCorefClusterID;
+    public String getStyle() {
+        return style;
     }
 
-    public Gender getGender(){
-        return gender;
+    public void setVoice(VoiceInfo voice) {
+        this.voice = voice;
     }
 
-    public Integer getCorefClusterID(){
-        return corefClusterID;
+    public void setStyle(String style) {
+        this.style = style;
     }
 }

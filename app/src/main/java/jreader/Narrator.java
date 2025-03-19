@@ -5,16 +5,14 @@ import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.microsoft.cognitiveservices.speech.VoiceInfo;
-
 public class Narrator {
 
-    private VoiceInfo narrator;
+    private SpeakerEntity narrator;
     private FindQuotes finder;
     
-        public Narrator(){
-            this.finder = new FindQuotes();  // Create an instance of FindQuotes
-            this.narrator = finder.getNarrator();
+    public Narrator(){
+        this.finder = new FindQuotes();  // Create an instance of FindQuotes
+        this.narrator = finder.getNarrator();
     }
 
     public void narrateText(String text) throws InterruptedException, ExecutionException{
@@ -42,7 +40,7 @@ public class Narrator {
                 if (start > matcher.start() && end < matcher.end()) {
                     if(printQuote){
                         System.out.println("Quoted text: " + matcher.group());
-                        synthesiser.GenerateTTS(matcher.group(), finder.getQuoteSpeaker(matcher.group()).getShortName());
+                        synthesiser.GenerateTTS(matcher.group(), finder.getQuoteSpeaker(matcher.group()).getVoice().getShortName());
                         printQuote = false;
                     }
                     insideQuote = true;
@@ -61,7 +59,7 @@ public class Narrator {
                     // Stop at a period and print the collected sentence
                     if ((word.equals(".") || word.equals("\"")) && !sentenceBuilder.toString().trim().equals("")) {
                         System.out.println("Sentence: " + sentenceBuilder.toString().trim());
-                        synthesiser.GenerateTTS(sentenceBuilder.toString().trim(), this.narrator.getShortName(), "narration-relaxed");
+                        synthesiser.GenerateTTS(sentenceBuilder.toString().trim(), this.narrator.getVoice().getShortName(), this.narrator.getStyle());
                         sentenceBuilder.setLength(0); // Reset for the next sentence
                     }
                 }
