@@ -10,7 +10,6 @@ import com.microsoft.cognitiveservices.speech.VoiceInfo;
 import edu.stanford.nlp.coref.data.CorefChain;
 import edu.stanford.nlp.coref.data.CorefChain.CorefMention;
 import edu.stanford.nlp.coref.data.Dictionaries.Gender;
-import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.CoreDocument;
 import edu.stanford.nlp.pipeline.CoreQuote;
@@ -50,7 +49,7 @@ public class FindQuotes {
             };
 
             // Get phrase structure
-            TreebankLanguagePack tlp = new PennTreebankLanguagePack();
+            TreebankLanguagePack tree = new PennTreebankLanguagePack();
             System.out.println("\nBracketed Structure: " + tree);
         }
         Map<Integer, CorefChain> corefChains = coreDocument.corefChains();
