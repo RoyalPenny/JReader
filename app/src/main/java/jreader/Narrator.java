@@ -76,6 +76,6 @@ public class Narrator {
     }
 
     public void getTree(String text){
-        finder.printTree(text);
+        finder.printTree();
     }
 }
