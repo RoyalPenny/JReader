@@ -12,10 +12,8 @@ public class App {
         //BookReader bookReader = new BookReader();
         //bookReader.readBook();
 
-        String text1 = "John walked into the cafe and spotted Emily. "
-        + "\"Hey, how's your day going?\" he asked with a smile. "
-        + "\"It's been busy,\" She replied, taking a sip of her coffee. \"I had back-to-back meetings all morning.\" "
-        + "Emily also loudly says \"I am a stegosaurus and I'm a vegetarian rarrrr. I also deteste insurance companies.\"" ;
+        String text1 = "\"Hey, how's your day going?\" he asked happily. "
+        + "\"It's been busy,\" She replied, sadly, even though he was happy.";
 
         /*
         + "As they chatted, a waiter approached them. \"Would you like to order anything else?\" he inquired. "
@@ -26,12 +24,13 @@ public class App {
         + "\"Oh, my manager, Mr. Thompson,\" she clarified. \"He wanted an update on the project.\"";
         */
     
-        String text2 = "The waiter returned with the bill. \"Take your time,\" he said before walking away. "
+        /* 
+        String text2 = "The waiter returned with the bill. \"Take your time,\" he said calmly before walking away. "
         + "John looked at Emily and he said \"Well, let's catch up again soon.\" "
         + "\"Definitely,\" Emily said with a smile."; 
+        */
 
-        narrator.narrateText(text1);
-        narrator.narrateText(text2);
+        narrator.getTree(text1);
         
         
 

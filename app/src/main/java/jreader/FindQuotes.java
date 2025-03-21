@@ -15,9 +15,7 @@ import edu.stanford.nlp.pipeline.CoreDocument;
 import edu.stanford.nlp.pipeline.CoreQuote;
 import edu.stanford.nlp.pipeline.CoreSentence;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
-import edu.stanford.nlp.trees.PennTreebankLanguagePack;
 import edu.stanford.nlp.trees.Tree;
-import edu.stanford.nlp.trees.TreebankLanguagePack;
 
 public class FindQuotes {
     private final StanfordCoreNLP pipeline;
@@ -42,16 +40,7 @@ public class FindQuotes {
 
     public void processText(String text) {
         CoreDocument coreDocument = pipeline.processToCoreDocument(text);
-        for (CoreSentence sentence : coreDocument.sentences()) {
-            for(Tree tree : sentence.constituencyParse()){
-                System.out.println("Constituency Parse Tree:");
-                tree.pennPrint(); // Print tree in Penn Treebank format
-            };
 
-            // Get phrase structure
-            TreebankLanguagePack tree = new PennTreebankLanguagePack();
-            System.out.println("\nBracketed Structure: " + tree);
-        }
         Map<Integer, CorefChain> corefChains = coreDocument.corefChains();
 
         this.quoteMap.clearQuotes();
@@ -126,5 +115,15 @@ public class FindQuotes {
     public SpeakerEntity getNarrator(){
         SpeakerEntity narrator = new SpeakerEntity(speechSynthesiser.getSpeakerVoice(Gender.MALE), "narration-relaxed");
         return narrator;
+    }
+
+    public void printTree(String text){
+        CoreDocument coreDocument = pipeline.processToCoreDocument(text);
+    
+        for (CoreSentence sentence : coreDocument.sentences()) {
+            Tree tree = sentence.constituencyParse();
+            System.out.println("Constituency Parse Tree:");
+            tree.pennPrint(); // Print tree in Penn Treebank format
+        }
     }
 }

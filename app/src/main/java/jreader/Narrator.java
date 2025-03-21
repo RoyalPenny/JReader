@@ -40,7 +40,7 @@ public class Narrator {
                 if (start > matcher.start() && end < matcher.end()) {
                     if(printQuote){
                         System.out.println("Quoted text: " + matcher.group());
-                        synthesiser.GenerateTTS(matcher.group(), finder.getQuoteSpeaker(matcher.group()).getVoice().getShortName());
+                        //synthesiser.GenerateTTS(matcher.group(), finder.getQuoteSpeaker(matcher.group()).getVoice().getShortName());
                         printQuote = false;
                     }
                     insideQuote = true;
@@ -59,7 +59,7 @@ public class Narrator {
                     // Stop at a period and print the collected sentence
                     if ((word.equals(".") || word.equals("\"")) && !sentenceBuilder.toString().trim().equals("")) {
                         System.out.println("Sentence: " + sentenceBuilder.toString().trim());
-                        synthesiser.GenerateTTS(sentenceBuilder.toString().trim(), this.narrator.getVoice().getShortName(), this.narrator.getStyle());
+                        //synthesiser.GenerateTTS(sentenceBuilder.toString().trim(), this.narrator.getVoice().getShortName(), this.narrator.getStyle());
                         sentenceBuilder.setLength(0); // Reset for the next sentence
                     }
                 }
@@ -72,5 +72,9 @@ public class Narrator {
         }
 
         synthesiser.getAudio().get();  // Wait for the audio to finish playing
+    }
+
+    public void getTree(String text){
+        finder.printTree(text);
     }
 }
