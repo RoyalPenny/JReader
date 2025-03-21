@@ -10,10 +10,15 @@ import com.microsoft.cognitiveservices.speech.VoiceInfo;
 import edu.stanford.nlp.coref.data.CorefChain;
 import edu.stanford.nlp.coref.data.CorefChain.CorefMention;
 import edu.stanford.nlp.coref.data.Dictionaries.Gender;
+import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.CoreDocument;
 import edu.stanford.nlp.pipeline.CoreQuote;
+import edu.stanford.nlp.pipeline.CoreSentence;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
+import edu.stanford.nlp.trees.PennTreebankLanguagePack;
+import edu.stanford.nlp.trees.Tree;
+import edu.stanford.nlp.trees.TreebankLanguagePack;
 
 public class FindQuotes {
     private final StanfordCoreNLP pipeline;
@@ -38,6 +43,16 @@ public class FindQuotes {
 
     public void processText(String text) {
         CoreDocument coreDocument = pipeline.processToCoreDocument(text);
+        for (CoreSentence sentence : coreDocument.sentences()) {
+            for(Tree tree : sentence.constituencyParse()){
+                System.out.println("Constituency Parse Tree:");
+                tree.pennPrint(); // Print tree in Penn Treebank format
+            };
+
+            // Get phrase structure
+            TreebankLanguagePack tlp = new PennTreebankLanguagePack();
+            System.out.println("\nBracketed Structure: " + tree);
+        }
         Map<Integer, CorefChain> corefChains = coreDocument.corefChains();
 
         this.quoteMap.clearQuotes();

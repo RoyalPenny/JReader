@@ -72,22 +72,5 @@ public class Narrator {
         }
 
         synthesiser.getAudio().get();  // Wait for the audio to finish playing
-
-            //synthesiser.GenerateTTS(beforeQuote, this.narrator.getShortName());
-
-                // Extract the quote and process it
-                
-            //synthesiser.GenerateTTS(quote, finder.getQuoteSpeaker("\"" + quote + "\"").getShortName());
-
-           
-            
-            //synthesiser.GenerateTTS(afterQuote, this.narrator.getShortName());
-        
-        /*for (VoiceInfo voice : speech.getNeutralSpeakers()) {
-            System.out.println("Voice Name: " + voice.getName());
-            System.out.println("Language: " + voice.getLocale());
-            System.out.println("Gender: " + voice.getGender());
-            System.out.println("======================");
-        }*/
     }
 }
