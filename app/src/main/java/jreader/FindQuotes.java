@@ -21,7 +21,7 @@ public class FindQuotes {
     private final StanfordCoreNLP pipeline;
     private final QuoteMap quoteMap;
     private final SpeechSynthesis speechSynthesiser;
-
+    private CoreDocument coreDocument;
 
         // Constructor to initialize CoreNLP pipeline
     public FindQuotes() {
@@ -33,14 +33,18 @@ public class FindQuotes {
         this.pipeline = new StanfordCoreNLP(props);
         this.quoteMap = new QuoteMap();
         this.speechSynthesiser = new SpeechSynthesis();
-        speechSynthesiser.generateSpeakerLists();
+        this.speechSynthesiser.generateSpeakerLists();
+        this.coreDocument = null;
+    }
+
+    public void annotateText(String text){
+        this.coreDocument = pipeline.processToCoreDocument(text);
     }
 
     // Method to process text and extract quotes
 
-    public void processText(String text) {
-        CoreDocument coreDocument = pipeline.processToCoreDocument(text);
 
+    public void processText(String text) {
         Map<Integer, CorefChain> corefChains = coreDocument.corefChains();
 
         this.quoteMap.clearQuotes();
@@ -48,24 +52,11 @@ public class FindQuotes {
         
         for (CorefChain chain : corefChains.values()) {        
             //chain.getMentionsWithSameHead(sentenceNumber, headIndex)
-            Gender entityGender = Gender.UNKNOWN;
-
-            for(CorefMention mention : chain.getMentionsInTextualOrder()){
-                if(mention.gender.equals(Gender.FEMALE)){
-                    entityGender = Gender.FEMALE;
-                }
-
-                if(mention.gender.equals(Gender.MALE)){
-                    entityGender = Gender.MALE;
-                }
-
-                if(mention.gender.equals(Gender.NEUTRAL)){
-                    entityGender = Gender.NEUTRAL;
-                }
-            }
+            Gender entityGender = getGender(chain);
      
             System.out.println("Entity: " + chain.getRepresentativeMention().mentionSpan + " || Gender: " + entityGender.toString());
             System.out.println("============");
+
             VoiceInfo voice;
 
             if(!this.quoteMap.getEntitiesHashMap().containsKey(chain.getRepresentativeMention().mentionSpan)){
@@ -74,15 +65,22 @@ public class FindQuotes {
             }
 
             for (CorefMention mention : chain.getMentionsInTextualOrder()){
-                System.out.println(mention);
-                System.out.println(mention.corefClusterID);
-                System.out.println(mention.sentNum + ", " + mention.headIndex);
-
                 this.quoteMap.addAssociatedEntity(Arrays.asList(mention.sentNum, mention.headIndex), chain.getRepresentativeMention().mentionSpan);
             }
         }
+        setQuoteIndex();
+    }
 
-        System.out.println("xxxxxxxxxxxxxxxxxx");
+    public SpeakerEntity getQuoteSpeaker(String quote){
+        List<Integer> quoteIndex = this.quoteMap.getQuoteToIndex(quote);
+        String entityName = this.quoteMap.getIndexToAssocciatedEntity(quoteIndex);
+        SpeakerEntity entity = this.quoteMap.getEntityNameToEntity(entityName);
+        VoiceInfo voice = entity.getVoice();
+        System.out.println(quote + " is voiced by " + voice.getName());
+        return entity;
+    }
+
+    private void setQuoteIndex(){
         List<CoreQuote> coreQuotes = coreDocument.quotes();
         for(CoreQuote quote : coreQuotes){ 
             quote.speakerTokens().ifPresent(tokens -> {
@@ -97,19 +95,27 @@ public class FindQuotes {
             });
 
         }
-
-        //System.out.println("Entities Hash: " + this.quoteMap.getEntitiesHashMap());
-        //System.out.println("Quotes Hash: " + this.quoteMap.getQuotesHashMap());
-        //System.out.println("Voices Hash: " + this.quoteMap.getVoicesHashMap());
     }
 
-    public SpeakerEntity getQuoteSpeaker(String quote){
-        List<Integer> quoteIndex = this.quoteMap.getQuoteToIndex(quote);
-        String entityName = this.quoteMap.getIndexToAssocciatedEntity(quoteIndex);
-        SpeakerEntity entity = this.quoteMap.getEntityNameToEntity(entityName);
-        VoiceInfo voice = entity.getVoice();
-        System.out.println(quote + " is voiced by " + voice.getName());
-        return entity;
+    private Gender getGender(CorefChain chain){
+
+        Gender entityGender = Gender.UNKNOWN;
+
+        for(CorefMention mention : chain.getMentionsInTextualOrder()){
+            if(mention.gender.equals(Gender.FEMALE)){
+                entityGender = Gender.FEMALE;
+            }
+
+            if(mention.gender.equals(Gender.MALE)){
+                entityGender = Gender.MALE;
+            }
+
+            if(mention.gender.equals(Gender.NEUTRAL)){
+                entityGender = Gender.NEUTRAL;
+            }
+        }
+
+        return entityGender;
     }
 
     public SpeakerEntity getNarrator(){
@@ -117,9 +123,7 @@ public class FindQuotes {
         return narrator;
     }
 
-    public void printTree(String text){
-        CoreDocument coreDocument = pipeline.processToCoreDocument(text);
-    
+    public void printTree(){
         for (CoreSentence sentence : coreDocument.sentences()) {
             Tree tree = sentence.constituencyParse();
             System.out.println("Constituency Parse Tree:");

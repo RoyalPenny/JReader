@@ -23,6 +23,7 @@ public class Narrator {
 
         BreakIterator wordIterator = BreakIterator.getWordInstance();
 
+        finder.annotateText(text);
         finder.processText(text);  // Call the method to process text
 
         wordIterator.setText(text);
