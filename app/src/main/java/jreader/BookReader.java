@@ -25,6 +25,9 @@ public class BookReader {
             // Load the EPUB file
             FileInputStream epubInputStream = new FileInputStream(epubPath);
             Book book = new EpubReader().readEpub(epubInputStream);
+            
+            // Print out the contents of the book (debug)
+            EpubReader.getAllUniqueResources()
 
             // Extract and print text from all chapters
             System.out.println("\n--- Book Content ---\n");
