@@ -102,10 +102,12 @@ public class FindQuotes {
         for(CorefMention mention : chain.getMentionsInTextualOrder()){
             if(mention.gender.equals(Gender.FEMALE)){
                 entityGender = Gender.FEMALE;
+                break;
             }
 
             if(mention.gender.equals(Gender.MALE)){
                 entityGender = Gender.MALE;
+                break;
             }
 
             if(mention.gender.equals(Gender.NEUTRAL)){
